@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, ControlLabel, Button } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel, Button, Glyphicon } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 
 export class UpdateKeywordsForm extends Component {
@@ -11,14 +11,6 @@ export class UpdateKeywordsForm extends Component {
 			keywords: '',
 			tags: []
 		};
-	}
-
-	getValidationState() {
-		const length = this.state.keywords.length;
-		if (length > 10) return 'success';
-		else if (length > 5) return 'warning';
-		else if (length > 0) return 'error';
-		return null;
 	}
 
 	updateKeywords(e){
@@ -56,18 +48,17 @@ export class UpdateKeywordsForm extends Component {
 				<form>
 					<FormGroup
 					controlId="formBasicText"
-					validationState={this.getValidationState()}
 					>
 						<ControlLabel>Modifier les mots clés</ControlLabel>
 						<FormControl
 							type="text"
 							value={this.state.keywords}
-							placeholder="Enter keywords separated by comas"
+							placeholder="Les mots-clés doivent être séparés par des virgules (ex: mot1,mot2,...)"
 							onChange={this.updateKeywords.bind(this)}
 						/>
 						<FormControl.Feedback />
 					</FormGroup>
-					<Link to="/"><Button onClick={this.submit.bind(this)}>Valider</Button></Link>
+					<Link to="/"><Button onClick={this.submit.bind(this)}>Valider <Glyphicon glyph="ok" /></Button></Link>
 				</form>
                 </div>
             </div>

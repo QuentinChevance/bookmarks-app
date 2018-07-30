@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Panel, Glyphicon, Grid, Row, Col, ListGroup, ListGroupItem, Badge, Button, ButtonGroup, Pagination } from "react-bootstrap";
-import { UpdateKeywordsForm } from "./updateKeywords";
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 export class BookmarkList extends Component {

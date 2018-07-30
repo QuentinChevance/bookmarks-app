@@ -150,7 +150,7 @@ class App extends Component {
 		console.log("link",link);
 
 		const links = this.state.links;
-		links.push(link);
+		links.unshift(link);
 		this.setState({links:links});
 		console.log("state changed",this.state);
 	}

@@ -6,7 +6,10 @@ import { Link } from 'react-router-dom';
 export class BookmarkList extends Component {
     constructor(props) {
         super(props);
-        this.modifyLinkKw = this.modifyLinkKw.bind(this);
+        /**
+         * Number of links by page which you can change if you want to display less or more links by page 
+         */
+        this.linkByPage = 5;
         this.state = {
             links: props.links,
             lists: [],
@@ -16,10 +19,11 @@ export class BookmarkList extends Component {
         }
     }
 
-
+    /**
+     * Delete the link
+     * @param {String} url 
+     */
     removeLink(url) {
-        console.log("url",url);
-
         const links = this.props.links;
         links.forEach((link, index, object) => {
             if(link.url === url){
@@ -27,15 +31,14 @@ export class BookmarkList extends Component {
             }
         });
         this.props.updateLinks(links);
-        // this.props.toggleBmForm();
-        // this.props.toggleBmForm();
-
     }
 
+    /**
+     * Change current page when clicking on the pagination
+     * @param {Number} i index of current page
+     */
     changePage(i){
-
-        let items = [];
-
+        const items = [];
         for (let number = 1; number <= this.state.lists.length; number++) {
             console.log("number",number,"length",this.state.lists.length)
             items.push(
@@ -49,40 +52,32 @@ export class BookmarkList extends Component {
         });
     }
 
+    /**
+     * Update the list
+     */
     updateComponent(){
-        console.log("props",this.props);
-
-        let tmp = 0,
+        const activePage = 1,
+            items = [],
             lists = [],
             links = this.props.links,
             listLength = this.props.links.length;
-        console.log("this.props.links",this.props);
-
+        let tmp = 0;
+            
         for(let i = 0; i <= listLength; i++){
-            if (i % 5 === 0 && listLength - i >= 5) {
-                console.log("not last push, i",i,"listLength",listLength);
-                lists.push(links.slice(tmp,tmp+5));
-                tmp += 5;
-                if (i+5 === listLength) {
-                    break;
-                }
-                console.log("links",links);
-            } else if (listLength < 5) {
+            if (i % this.linkByPage === 0 && listLength - i >= this.linkByPage) {
+                lists.push(links.slice(tmp,tmp+this.linkByPage));
+                tmp += this.linkByPage;
+                if (i+this.linkByPage === listLength)  break;
+            } else if (listLength < this.linkByPage) {
                 lists.push(links.slice(tmp,listLength));
                 break;
-            } else if (i > 5 && listLength - i <= 5) {
+            } else if (i > this.linkByPage && listLength - i <= this.linkByPage) {
                 lists.push(links.slice(tmp,listLength));
-                console.log("last push, i",i,"listLength",listLength);
-
                 break;
             }
         }
-        let items = [],
-            activePage = 1;
-        console.log("this.state.activePage",this.state.activePage);
 
         for (let number = 1; number <= lists.length; number++) {
-            console.log("number",number,"length",this.state.lists.length)
             items.push(
                 <Pagination.Item active={number === activePage} onClick={() => this.changePage(number)}>{number}</Pagination.Item>
             );
@@ -96,26 +91,18 @@ export class BookmarkList extends Component {
     }
 
     componentWillReceiveProps() {
-        console.log("PROPS RECEIVED");
         this.updateComponent();
     }
 
     componentDidMount(){
-        console.log("WILL MOOOOOOUNT");
         this.updateComponent();
-    }
-
-
-    modifyLinkKw(url = null) {
-        this.setState({linkToModify:url});
     }
 
     render() {
         return (
             <div>
-                 <h2>Mes bookmarks</h2>
-                    {console.log("this.state.currentArray",this.state.currentArray)}
-                    { typeof this.state.currentArray !== "undefined" ? this.state.currentArray.map(link =>
+                 <h2>Mes marque-pages</h2>
+                    { this.state.currentArray.length > 0 ? this.state.currentArray.map(link =>
                         <Panel>
                             <Panel.Heading>
                                 <Grid>
@@ -132,19 +119,22 @@ export class BookmarkList extends Component {
                             </Panel.Heading>
                             <Panel.Body>
                                 <ListGroup>
-                                    <ListGroupItem>Title: {link.title}</ListGroupItem>
-                                    <ListGroupItem>Author: {link.author}</ListGroupItem>
-                                    <ListGroupItem>Added date: {link.addedDate}</ListGroupItem>
-                                    <ListGroupItem>Width: {link.width}</ListGroupItem>
-                                    <ListGroupItem>Height: {link.height}</ListGroupItem>
-                                    {link.duration !== null ? <ListGroupItem>Duration: {link.duration}</ListGroupItem> : ''}
-                                    <ListGroupItem>
-                                        Mots clés: {link.tags.map(tag => <Badge>{tag}</Badge>)}
-                                    </ListGroupItem>
+                                    <ListGroupItem>Titre: {link.title}</ListGroupItem>
+                                    <ListGroupItem>Auteur: {link.author}</ListGroupItem>
+                                    <ListGroupItem>Date d'ajout: {link.addedDate}</ListGroupItem>
+                                    <ListGroupItem>Largeur: {link.width} px</ListGroupItem>
+                                    <ListGroupItem>Hauteur: {link.height} px</ListGroupItem>
+                                    {link.duration !== null ? <ListGroupItem>Duration: {link.duration} secs</ListGroupItem> : ''}
+                                    {link.tags.length > 0
+                                        ? <ListGroupItem>
+                                            Mots clés: {link.tags.map(tag => <Badge>{tag}</Badge>)}
+                                        </ListGroupItem>
+                                        : ''
+                                    }
                                 </ListGroup>
                             </Panel.Body>
                         </Panel>
-                        ) : ''}
+                        ) : <h4>Vous n'avez pas encore de marque-page.</h4>}
                         {this.state.items.length > 1 && this.state.linkToModify === null ? <div>
                             <Pagination bsSize="medium">{this.state.items}</Pagination>
                         </div> : ''}

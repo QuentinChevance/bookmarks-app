@@ -13,6 +13,10 @@ export class UpdateKeywordsForm extends Component {
 		};
 	}
 
+	/**
+	 * Update the keywords when the input value changed
+	 * @param {Event} e 
+	 */
 	updateKeywords(e){
 		let keywords = e.target.value;
 		this.setState({
@@ -21,6 +25,9 @@ export class UpdateKeywordsForm extends Component {
 		});
 	}
 
+	/**
+	 * Set this.state.keywords to be equals to the ones from the link that has to be updated
+	 */
 	componentWillMount(){
 		const links = this.props.links;
         links.forEach((link) => {
@@ -30,7 +37,9 @@ export class UpdateKeywordsForm extends Component {
         });
 	}
 
-
+	/**
+	 * Submit the keywords modifications
+	 */
 	submit(){
 		const links = this.props.links;
         links.forEach((link, index, object) => {

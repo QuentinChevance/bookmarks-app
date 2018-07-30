@@ -19,6 +19,9 @@ export class BookmarkForm extends Component {
 		};
 	}
 
+	/**
+	 * Notifies the user if the url is not in a valid format
+	 */
 	getValidationState() {
 		let ret = null;
 		if (this.state.url.length === 0) {
@@ -31,10 +34,18 @@ export class BookmarkForm extends Component {
 		return ret;
 	}
 
+	/**
+	 * Change url state
+	 * @param {Event} e 
+	 */
 	handleChange(e) {
 		this.setState({url:e.target.value});
 	}
 
+	/**
+	 * Update keywords and tags state
+	 * @param {Event} e 
+	 */
 	updateKeywords(e){
 		let keywords = e.target.value;
 		this.setState({
@@ -43,6 +54,11 @@ export class BookmarkForm extends Component {
 		});
 	}
 
+	/**
+	 * Get dimensions of the picture
+	 * @param {String} url 
+	 * @param {Object} response 
+	 */
 	getMeta(url,response){
         const self = this,
             img = new Image();
@@ -50,24 +66,23 @@ export class BookmarkForm extends Component {
             let tmpLink = {
                 url: self.state.url,
                 title: response.data.photo.title._content,
-                author: response.data.photo.owner.username,
-                addedDate: new Date(response.data.photo.dates.posted*1000).toString(),
+				author: response.data.photo.owner.username,
+				addedDate: new Date(response.data.photo.dates.posted * 1000).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
                 width: this.naturalWidth,
                 height: this.naturalHeight,
                 duration: null,
                 tags: self.state.tags
             };
 			self.props.addLink(tmpLink);
-			console.log("link added",tmpLink);
-			self.setState({
-				url: '',
-				tags: [],
-				keywords: ''
-			});
         });
         img.src = url;
 	}
 
+	/**
+	 * Change the alert state
+	 * @param {String} content 
+	 * @param {String} type 
+	 */
 	handleAlert(content = '',type = ''){
 		this.setState({
 			alert: {
@@ -77,42 +92,40 @@ export class BookmarkForm extends Component {
 		});
 	}
 
+	/**
+	 * Submit a new link
+	 * @param {Event} e 
+	 */
 	submit(e){
-		const self = this;
-		let linkUrl = this.state.url.endsWith("/") ? this.state.url.substring(0, this.state.url.length-1) : this.state.url;
+		const self = this,
+			linkUrl = this.state.url.endsWith("/") ? this.state.url.substring(0, this.state.url.length-1) : this.state.url;
+		// Check if the url is valid, otherwise display an alert
 		if(this.getValidationState() === 'success') {
+			// Check if the url is from vimeo
 			if(linkUrl.includes('vimeo')){
-				console.log("link",linkUrl);
 				axios.get("https://api.vimeo.com/videos/"+linkUrl.substr(linkUrl.lastIndexOf('/') + 1),{
 					headers: {'Authorization': "bearer 2f121aa92937fb84d529284184fce177"}
 				})
 				.then(function (response) {
-					console.log(response);
 					let tmpLink = {
 						url: response.data.link,
 						title: response.data.name,
 						author: response.data.user.name,
-						addedDate: response.data.created_time,
+						addedDate: new Date(response.data.created_time).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
 						width: response.data.width,
 						height: response.data.height,
 						duration: response.data.duration,
 						tags: self.state.tags
 					};
 					self.props.addLink(tmpLink);
-
-					self.setState({
-						url: '',
-						tags: [],
-						keywords: ''
-					});
 				})
 				.catch(function (error) {
 					console.log(error);
 				});
+			// Check if the url is from flickr
 			} else if (linkUrl.includes('flickr')) {
 				axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=796a3cd3977fcab809adf5489af980a1&photo_id=${linkUrl.substr(linkUrl.lastIndexOf('/') + 1)}&format=json&nojsoncallback=1`)
 					.then(function (response) {
-						console.log(response);
 						self.getMeta(`https://farm${response.data.photo.farm}.staticflickr.com/${response.data.photo.server}/${response.data.photo.id}_${response.data.photo.secret}.jpg`,response);
 					})
 					.catch(function (error) {

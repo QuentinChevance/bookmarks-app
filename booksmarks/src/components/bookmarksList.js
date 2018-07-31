@@ -7,7 +7,7 @@ export class BookmarkList extends Component {
     constructor(props) {
         super(props);
         /**
-         * Number of links by page which you can change if you want to display less or more links by page 
+         * Number of links by page which you can change if you want to display less or more links by page
          */
         this.linkByPage = 5;
         this.state = {
@@ -21,7 +21,7 @@ export class BookmarkList extends Component {
 
     /**
      * Delete the link
-     * @param {String} url 
+     * @param {String} url
      */
     removeLink(url) {
         const links = this.props.links;
@@ -62,7 +62,7 @@ export class BookmarkList extends Component {
             links = this.props.links,
             listLength = this.props.links.length;
         let tmp = 0;
-            
+
         for(let i = 0; i <= listLength; i++){
             if (i % this.linkByPage === 0 && listLength - i >= this.linkByPage) {
                 lists.push(links.slice(tmp,tmp+this.linkByPage));
@@ -103,7 +103,7 @@ export class BookmarkList extends Component {
             <div>
                  <h2>Mes marque-pages</h2>
                     { this.state.currentArray.length > 0 ? this.state.currentArray.map(link =>
-                        <Panel>
+                        <Panel key={link.url}>
                             <Panel.Heading>
                                 <Grid>
                                     <Row className="show-grid">
@@ -127,7 +127,7 @@ export class BookmarkList extends Component {
                                     {link.duration !== null ? <ListGroupItem>Duration: {link.duration} secs</ListGroupItem> : ''}
                                     {link.tags.length > 0
                                         ? <ListGroupItem>
-                                            Mots clés: {link.tags.map(tag => <Badge>{tag}</Badge>)}
+                                            Mots clés: {link.tags.map(tag => <Badge key={tag}>{tag}</Badge>)}
                                         </ListGroupItem>
                                         : ''
                                     }

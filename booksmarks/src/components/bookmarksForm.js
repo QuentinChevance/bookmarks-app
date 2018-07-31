@@ -23,20 +23,24 @@ export class BookmarkForm extends Component {
 	 * Notifies the user if the url is not in a valid format
 	 */
 	getValidationState() {
-		let ret = null;
 		if (this.state.url.length === 0) {
-			ret = 'warning';
-		} else if(this.state.url.match(/(https:\/\/www\.flickr\.com\/photos\/.*\/\d+\/$)|(https:\/\/vimeo\.com\/.*\d+$)/)){
-			ret = 'success';
+			return 'info';
+		} else if(this.state.url.match(/(https:\/\/www\.flickr\.com\/photos\/.*\/\d+(\/$){0,1})|(https:\/\/vimeo\.com\/.*\d+(\/$){0,1})/)){
+			let ret = 'success';
+			this.props.links.forEach(link => {
+				if(link.url === this.state.url){
+					ret = 'warning';
+				}
+			})
+			return ret;
 		} else {
-			ret = 'error';
+			return 'error';
 		}
-		return ret;
 	}
 
 	/**
 	 * Change url state
-	 * @param {Event} e 
+	 * @param {Event} e
 	 */
 	handleChange(e) {
 		this.setState({url:e.target.value});
@@ -44,7 +48,7 @@ export class BookmarkForm extends Component {
 
 	/**
 	 * Update keywords and tags state
-	 * @param {Event} e 
+	 * @param {Event} e
 	 */
 	updateKeywords(e){
 		let keywords = e.target.value;
@@ -56,8 +60,8 @@ export class BookmarkForm extends Component {
 
 	/**
 	 * Get dimensions of the picture
-	 * @param {String} url 
-	 * @param {Object} response 
+	 * @param {String} url
+	 * @param {Object} response
 	 */
 	getMeta(url,response){
         const self = this,
@@ -80,8 +84,8 @@ export class BookmarkForm extends Component {
 
 	/**
 	 * Change the alert state
-	 * @param {String} content 
-	 * @param {String} type 
+	 * @param {String} content
+	 * @param {String} type
 	 */
 	handleAlert(content = '',type = ''){
 		this.setState({
@@ -94,7 +98,7 @@ export class BookmarkForm extends Component {
 
 	/**
 	 * Submit a new link
-	 * @param {Event} e 
+	 * @param {Event} e
 	 */
 	submit(e){
 		const self = this,
@@ -132,8 +136,11 @@ export class BookmarkForm extends Component {
 						console.log(error);
 					});
 			}
+		} else if(this.getValidationState() === 'info'){
+			this.handleAlert("Veuillez coller votre url","info");
+			e.preventDefault();
 		} else if(this.getValidationState() === 'warning'){
-			this.handleAlert("Veuillez coller votre url","warning");
+			this.handleAlert("Ce lien est déjà présent dans la liste","warning");
 			e.preventDefault();
 		} else {
 			this.handleAlert("Votre url n'est pas du bon type","danger");
@@ -160,7 +167,7 @@ export class BookmarkForm extends Component {
 				<form>
 					<FormGroup
 					controlId="formBasicText"
-					validationState={this.getValidationState()}
+					validationState={this.getValidationState() === 'info' ? 'warning' : this.getValidationState()}
 					>
 						<ControlLabel>Votre lien doit être du type {'https://www.flickr.com/photos/{auteurId}/{photoId} ou https://vimeo.com/{videoId}'}</ControlLabel>
 						<FormControl

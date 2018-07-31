@@ -16,7 +16,7 @@ class App extends Component {
 
 	/**
 	 * Add a link to this.state.links
-	 * @param {Object} link 
+	 * @param {Object} link
 	 */
 	addLink(link){
 		const links = this.state.links;
@@ -26,7 +26,7 @@ class App extends Component {
 
 	/**
 	 * Update all the links
-	 * @param {Array} links 
+	 * @param {Array} links
 	 */
 	updateLinks(links){
 		this.setState({links:links});
@@ -48,7 +48,7 @@ class App extends Component {
 	 */
 	MyBookmarkForm = () => {
 		return (
-			<BookmarkForm addLink={this.addLink.bind(this)} toggleBmForm={this.toggleBmForm}/>
+			<BookmarkForm addLink={this.addLink.bind(this)} toggleBmForm={this.toggleBmForm} links={this.state.links}/>
 		);
 	}
 

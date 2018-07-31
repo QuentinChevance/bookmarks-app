@@ -57,7 +57,7 @@ class App extends Component {
 	 */
 	MyUpdateKeywordsForm = (props) => {
 		return (
-			<UpdateKeywordsForm link={props.match.params.url} links={this.state.links} updateLinks = {this.updateLinks} />
+			<UpdateKeywordsForm link={props.match.params.url} links={this.state.links} updateLinks = {this.updateLinks}/>
 		);
     }
 

@@ -15,7 +15,7 @@ export class UpdateKeywordsForm extends Component {
 
 	/**
 	 * Update the keywords when the input value changed
-	 * @param {Event} e 
+	 * @param {Event} e
 	 */
 	updateKeywords(e){
 		let keywords = e.target.value;
@@ -32,7 +32,10 @@ export class UpdateKeywordsForm extends Component {
 		const links = this.props.links;
         links.forEach((link) => {
             if(link.url === decodeURIComponent(this.props.link)){
-                this.setState({keywords: link.tags.join()})
+                this.setState({
+					keywords: link.tags.join(),
+					tags: link.tags
+				})
             }
         });
 	}

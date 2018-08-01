@@ -15,7 +15,8 @@ export class BookmarkList extends Component {
             lists: [],
             currentArray: [],
             items: [],
-            linkToModify: null
+            linkToModify: null,
+            activePage: 1
         }
     }
 
@@ -40,7 +41,6 @@ export class BookmarkList extends Component {
     changePage(i){
         const items = [];
         for (let number = 1; number <= this.state.lists.length; number++) {
-            console.log("number",number,"length",this.state.lists.length)
             items.push(
                 <Pagination.Item active={number === i} onClick={() => this.changePage(number)}>{number}</Pagination.Item>
             );
@@ -48,7 +48,8 @@ export class BookmarkList extends Component {
 
         this.setState({
             currentArray: this.state.lists[i-1],
-            items: items
+            items: items,
+            activePage: i
         });
     }
 
@@ -56,7 +57,7 @@ export class BookmarkList extends Component {
      * Update the list
      */
     updateComponent(){
-        const activePage = 1,
+        const activePage = this.state.activePage,
             items = [],
             lists = [],
             links = this.props.links,
@@ -85,7 +86,7 @@ export class BookmarkList extends Component {
 
         this.setState({
             lists: lists,
-            currentArray: lists[0],
+            currentArray: typeof lists[activePage-1] === 'undefined' ? lists[0] : lists[activePage-1],
             items: items
         });
     }

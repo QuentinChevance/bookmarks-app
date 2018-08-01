@@ -112,7 +112,7 @@ export class BookmarkForm extends Component {
 				})
 				.then(function (response) {
 					let tmpLink = {
-						url: response.data.link,
+						url: self.state.url,
 						title: response.data.name,
 						author: response.data.user.name,
 						addedDate: new Date(response.data.created_time).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),

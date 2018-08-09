@@ -10,7 +10,7 @@ class App extends Component {
 		super(props);
 		this.updateLinks = this.updateLinks.bind(this);
 		this.state = {
-			links: JSON.parse(localStorage.getItem('links')).length > 0 ? JSON.parse(localStorage.getItem('links')) : []
+			links: JSON.parse(localStorage.getItem('links')) !== null ? JSON.parse(localStorage.getItem('links')) : []
 		};
 	}
 

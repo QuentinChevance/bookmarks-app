@@ -10,7 +10,7 @@ class App extends Component {
 		super(props);
 		this.updateLinks = this.updateLinks.bind(this);
 		this.state = {
-			links: []
+			links: JSON.parse(localStorage.getItem('links')).length > 0 ? JSON.parse(localStorage.getItem('links')) : []
 		};
 	}
 
@@ -21,6 +21,7 @@ class App extends Component {
 	addLink(link){
 		const links = this.state.links;
 		links.unshift(link);
+		localStorage.setItem('links', JSON.stringify(links));
 		this.setState({links:links});
 	}
 
@@ -29,6 +30,7 @@ class App extends Component {
 	 * @param {Array} links
 	 */
 	updateLinks(links){
+		localStorage.setItem('links', JSON.stringify(links));
 		this.setState({links:links});
 	}
 
